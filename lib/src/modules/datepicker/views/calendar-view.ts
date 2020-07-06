@@ -1,4 +1,4 @@
-import { AfterViewInit, Input, OnDestroy, QueryList, Renderer2, ViewChildren } from "@angular/core";
+import { AfterViewInit, Input, OnDestroy, QueryList, Renderer2, ViewChildren, Directive } from "@angular/core";
 import { KeyCode } from "../../../misc/util/helpers/util";
 import { CalendarItem, SuiCalendarItem } from "../directives/calendar-item";
 import { CalendarRangeService } from "../services/calendar-range.service";
@@ -9,20 +9,21 @@ export enum CalendarViewType {
   Month = 1,
   Date = 2,
   Hour = 3,
-  Minute = 4
+  Minute = 4,
 }
 export type CalendarViewResult = [Date, CalendarViewType];
 
+@Directive()
 export abstract class CalendarView implements AfterViewInit, OnDestroy {
-  private _type:CalendarViewType;
-  private _service:CalendarService;
+  private _type: CalendarViewType;
+  private _service: CalendarService;
 
   @ViewChildren(SuiCalendarItem)
-  private _renderedItems:QueryList<SuiCalendarItem>;
-  private _highlightedItem?:CalendarItem;
+  private _renderedItems: QueryList<SuiCalendarItem>;
+  private _highlightedItem?: CalendarItem;
 
   @Input()
-  public set service(service:CalendarService) {
+  public set service(service: CalendarService) {
     this._service = service;
     this.ranges.loadService(service);
 
@@ -34,75 +35,75 @@ export abstract class CalendarView implements AfterViewInit, OnDestroy {
     };
   }
 
-  public get service():CalendarService {
+  public get service(): CalendarService {
     return this._service;
   }
 
-  public ranges:CalendarRangeService;
+  public ranges: CalendarRangeService;
 
-  public get currentDate():Date {
+  public get currentDate(): Date {
     return this.service.currentDate;
   }
 
-  public get selectedDate():Date | undefined {
+  public get selectedDate(): Date | undefined {
     return this.service.selectedDate;
   }
 
-  private _documentKeyDownListener:() => void;
+  private _documentKeyDownListener: () => void;
 
-  constructor(renderer:Renderer2, viewType:CalendarViewType, ranges:CalendarRangeService) {
+  constructor(renderer: Renderer2, viewType: CalendarViewType, ranges: CalendarRangeService) {
     this._type = viewType;
     this.ranges = ranges;
 
-    this._documentKeyDownListener = renderer.listen("document", "keydown", (e:KeyboardEvent) => this.onDocumentKeyDown(e));
+    this._documentKeyDownListener = renderer.listen("document", "keydown", (e: KeyboardEvent) => this.onDocumentKeyDown(e));
   }
 
   // Template Methods
 
-  public setDate(item:CalendarItem):void {
+  public setDate(item: CalendarItem): void {
     this.service.changeDate(item.date, this._type);
   }
 
-  public zoomOut():void {
+  public zoomOut(): void {
     this.service.zoomOut(this._type);
   }
 
   // Keyboard Control
 
-  public ngAfterViewInit():void {
+  public ngAfterViewInit(): void {
     this._renderedItems.changes.subscribe(() => this.onRenderedItemsChanged());
     this.onRenderedItemsChanged();
   }
 
-  private onRenderedItemsChanged():void {
-    this._renderedItems.forEach(i =>
-      i.onFocussed.subscribe((hasFocus:boolean) => {
+  private onRenderedItemsChanged(): void {
+    this._renderedItems.forEach((i) =>
+      i.onFocussed.subscribe((hasFocus: boolean) => {
         if (hasFocus) {
           this.highlightItem(i.item);
         }
-      })
+      }),
     );
 
     this.autoHighlight();
     this.highlightItem(this._highlightedItem);
   }
 
-  private autoHighlight():void {
+  private autoHighlight(): void {
     let date = this.selectedDate && this.ranges.current.containsDate(this.selectedDate) ? this.selectedDate : this.currentDate;
     if (this._highlightedItem && this.ranges.current.containsDate(this._highlightedItem.date)) {
       date = this._highlightedItem.date;
     }
 
-    const initiallyHighlighted = this.ranges.current.items.find(i => this.ranges.dateComparer.equal(i.date, date));
+    const initiallyHighlighted = this.ranges.current.items.find((i) => this.ranges.dateComparer.equal(i.date, date));
     if (initiallyHighlighted && !initiallyHighlighted.isDisabled) {
       this._highlightedItem = initiallyHighlighted;
     }
   }
 
-  private highlightItem(item:CalendarItem | undefined):void {
+  private highlightItem(item: CalendarItem | undefined): void {
     if (item) {
-      this._renderedItems.forEach(i => (i.hasFocus = false));
-      const rendered = this._renderedItems.find(ri => ri.item === item);
+      this._renderedItems.forEach((i) => (i.hasFocus = false));
+      const rendered = this._renderedItems.find((ri) => ri.item === item);
       if (rendered && !rendered.hasFocus) {
         rendered.hasFocus = true;
         rendered.changeDetector.detectChanges();
@@ -112,7 +113,7 @@ export abstract class CalendarView implements AfterViewInit, OnDestroy {
     }
   }
 
-  private onDocumentKeyDown(e:KeyboardEvent):void {
+  private onDocumentKeyDown(e: KeyboardEvent): void {
     if (this._highlightedItem && e.keyCode === KeyCode.Enter) {
       this.setDate(this._highlightedItem);
       return;
@@ -186,7 +187,7 @@ export abstract class CalendarView implements AfterViewInit, OnDestroy {
     this._highlightedItem = this.ranges.current.find(nextItem);
   }
 
-  public ngOnDestroy():void {
+  public ngOnDestroy(): void {
     this._documentKeyDownListener();
   }
 }

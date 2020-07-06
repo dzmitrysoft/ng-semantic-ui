@@ -13,6 +13,7 @@ import {
   TemplateRef,
   ViewChild,
   ViewContainerRef,
+  Directive,
 } from "@angular/core";
 import { Subscription } from "rxjs/internal/Subscription";
 import { ISelectLocaleValues, RecursivePartial } from "../../../behaviors/localization/locales/interfaces/values";
@@ -32,6 +33,7 @@ export interface IOptionContext<T> extends ITemplateRefContext<T> {
 
 // We use generic type T to specify the type of the options we are working with,
 // and U to specify the type of the property of the option used as the value.
+@Directive()
 export abstract class SuiSelectBase<T, U> implements AfterContentInit, OnDestroy {
   public dropdownService: DropdownService;
   public searchService: SearchService<T, U>;

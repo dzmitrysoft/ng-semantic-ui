@@ -2,9 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@piratuks/ng-semantic-ui": [
-        "../build/dist"
-      ]
+      "@piratuks/ng-semantic-ui": ["../build/dist"]
     }
-  }
+  },
+  "include": ["demo/**/*.d.ts"]
 }
