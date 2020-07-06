@@ -1,0 +1,51 @@
+{
+  "name": "@piratuks/ng-semantic-ui",
+  "version": "1.0.8",
+  "description": "Angular Semantic UI Components",
+  "homepage": "https://github.com/piratuks/ng-semantic-ui",
+  "author": {
+    "name": "Evaldas Laureckas",
+    "email": "evaldas.laureckas@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "angular-components",
+    "semantic-ui",
+    "no-jquery",
+    "ui",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/piratuks/ng-semantic-ui.git"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "tslint --fix --project .",
+      "git add"
+    ]
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "bowser": "^1.7.2",
+    "date-fns": "2.0.0-alpha.1",
+    "element-closest": "^2.0.2",
+    "extend": "^3.0.1",
+    "is-ua-webview": "^1.0.0",
+    "popper.js": "^1.14.0",
+    "tslib": "^1.10.0"
+  },
+  "peerDependencies": {
+    "rxjs": "^6.5.0"
+  },
+  "main": "bundles/piratuks-ng-semantic-ui.umd.js",
+  "module": "fesm5/piratuks-ng-semantic-ui.js",
+  "es2015": "fesm2015/piratuks-ng-semantic-ui.js",
+  "esm5": "esm5/piratuks-ng-semantic-ui.js",
+  "esm2015": "esm2015/piratuks-ng-semantic-ui.js",
+  "fesm5": "fesm5/piratuks-ng-semantic-ui.js",
+  "fesm2015": "fesm2015/piratuks-ng-semantic-ui.js",
+  "typings": "piratuks-ng-semantic-ui.d.ts",
+  "metadata": "piratuks-ng-semantic-ui.metadata.json"
+}
