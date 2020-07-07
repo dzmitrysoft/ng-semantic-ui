@@ -9,6 +9,9 @@
     "comment-format": [true, "check-space"],
     "conditional-expression-parens": false,
     "curly": true,
+    "deprecation": {
+      "severity": "warning"
+    },
     "encoding": true,
     "eofline": true,
     "forin": true,
@@ -55,8 +58,6 @@
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": [true, "ignore-template-strings"],
     "no-unused-expression": true,
-    "no-unused-variable": false,
-    "no-use-before-declare": false,
     "no-var-keyword": true,
     "number-literal-format": true,
     "object-literal-sort-keys": false,

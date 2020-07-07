@@ -1,13 +1,6 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "rules": {
-    "component-selector": [
-      true,
-      "element",
-      [
-        "sui"
-      ],
-      "kebab-case"
-    ]
+    "component-selector": [true, "element", ["sui"], "kebab-case"]
   }
 }

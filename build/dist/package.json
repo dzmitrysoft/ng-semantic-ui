@@ -1,6 +1,6 @@
 {
   "name": "@piratuks/ng-semantic-ui",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Angular Semantic UI Components",
   "homepage": "https://github.com/piratuks/ng-semantic-ui",
   "author": {
@@ -34,17 +34,15 @@
     "extend": "^3.0.1",
     "is-ua-webview": "^1.0.0",
     "popper.js": "^1.14.0",
-    "tslib": "^1.10.0"
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "rxjs": "^6.5.0"
   },
   "main": "bundles/piratuks-ng-semantic-ui.umd.js",
-  "module": "fesm5/piratuks-ng-semantic-ui.js",
+  "module": "fesm2015/piratuks-ng-semantic-ui.js",
   "es2015": "fesm2015/piratuks-ng-semantic-ui.js",
-  "esm5": "esm5/piratuks-ng-semantic-ui.js",
   "esm2015": "esm2015/piratuks-ng-semantic-ui.js",
-  "fesm5": "fesm5/piratuks-ng-semantic-ui.js",
   "fesm2015": "fesm2015/piratuks-ng-semantic-ui.js",
   "typings": "piratuks-ng-semantic-ui.d.ts",
   "metadata": "piratuks-ng-semantic-ui.metadata.json"
