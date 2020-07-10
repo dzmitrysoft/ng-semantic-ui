@@ -22,22 +22,21 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint --fix --project .",
       "git add"
     ]
   },
   "sideEffects": false,
   "dependencies": {
-    "bowser": "^1.7.2",
+    "bowser": "^2.10.0",
     "date-fns": "2.14.0",
-    "element-closest": "^2.0.2",
-    "extend": "^3.0.1",
+    "element-closest": "^3.0.2",
+    "extend": "^3.0.2",
     "is-ua-webview": "^1.0.5",
-    "popper.js": "^1.14.0",
+    "popper.js": "^1.16.1",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "rxjs": "^6.5.0"
+    "rxjs": "^6.6.0"
   },
   "main": "bundles/piratuks-ng-semantic-ui.umd.js",
   "module": "fesm2015/piratuks-ng-semantic-ui.js",

@@ -1,47 +1,45 @@
-import { Component, ContentChildren, QueryList, AfterContentInit } from "@angular/core";
+import { Component, ContentChildren, QueryList, AfterContentInit, ChangeDetectorRef } from "@angular/core";
 import { SuiTabHeader } from "../directives/tab-header";
 import { SuiTabContent } from "../directives/tab-content";
 import { Tab } from "../classes/tab";
 
 @Component({
   selector: "sui-tabset",
-  template: `
-    <ng-content></ng-content>
-  `
+  template: ` <ng-content></ng-content> `,
 })
 export class SuiTabset implements AfterContentInit {
   @ContentChildren(SuiTabHeader)
-  private _tabHeaders:QueryList<SuiTabHeader>;
+  private _tabHeaders: QueryList<SuiTabHeader>;
 
   @ContentChildren(SuiTabContent)
-  private _tabContents:QueryList<SuiTabContent>;
+  private _tabContents: QueryList<SuiTabContent>;
 
   // List of all tabs in the tabset.
-  public tabs:Tab[];
+  public tabs: Tab[];
 
   // Keeps track of the currently active tab.
-  private _activeTab:Tab;
+  private _activeTab: Tab;
 
-  public get activeTab():Tab {
+  public get activeTab(): Tab {
     return this._activeTab;
   }
 
   // When setting a tab as the currently active tab, it automatically gains
   // `isActive` status (saves littering `isActive = true` everywhere).
-  public set activeTab(tab:Tab) {
+  public set activeTab(tab: Tab) {
     this._activeTab = tab;
     tab.isActive = true;
   }
 
   // Keeps track of the number of times `internalComponentsUpdated` is called.
-  private _barrierCount:number;
+  private _barrierCount: number;
 
-  constructor() {
+  constructor(public changeDetector: ChangeDetectorRef) {
     this.tabs = [];
     this._barrierCount = 0;
   }
 
-  public ngAfterContentInit():void {
+  public ngAfterContentInit(): void {
     // Fire `internalComponentsUpdated` when the query lists change.
     this._tabHeaders.changes.subscribe(() => this.internalComponentsUpdated());
     this._tabContents.changes.subscribe(() => this.internalComponentsUpdated());
@@ -51,7 +49,7 @@ export class SuiTabset implements AfterContentInit {
   }
 
   // Fires whenever either the tab headers or tab contents query lists update.
-  private internalComponentsUpdated():void {
+  private internalComponentsUpdated(): void {
     // We are using a 'counting barrier of n = 2', i.e. the code within only runs after the method is called twice.
     // This is so that both the headers and contents query lists can update before we run code that matches the two up.
     this._barrierCount++;
@@ -66,15 +64,15 @@ export class SuiTabset implements AfterContentInit {
   }
 
   // Connects tab headers to tab contents, and creates a tab instance for each pairing.
-  private loadTabs():void {
+  private loadTabs(): void {
     // Remove any tabs that no longer have an associated header.
-    this.tabs = this.tabs.filter(t => !!this._tabHeaders.find(tH => tH === t.header));
+    this.tabs = this.tabs.filter((t) => !!this._tabHeaders.find((tH) => tH === t.header));
 
     this._tabHeaders
       // Filter out the loaded headers with attached tab instances.
-      .filter(tH => !this.tabs.find(t => t.header === tH))
-      .forEach(tH => {
-        const content = this._tabContents.find(tC => tC.id === tH.id);
+      .filter((tH) => !this.tabs.find((t) => t.header === tH))
+      .forEach((tH) => {
+        const content = this._tabContents.find((tC) => tC.id === tH.id);
 
         if (!content) {
           // Error if an associated tab content cannot be found for the given header.
@@ -93,7 +91,7 @@ export class SuiTabset implements AfterContentInit {
 
     // Assign each tab an index (which denotes the order they physically appear in).
     this._tabHeaders.forEach((tH, i) => {
-      const tab = this.tabs.find(t => t.header === tH);
+      const tab = this.tabs.find((t) => t.header === tH);
       if (tab) {
         tab.index = i;
       }
@@ -106,7 +104,7 @@ export class SuiTabset implements AfterContentInit {
       // Check if there are no current existing active tabs.
       // If so, we must activate the first available tab.
       this.activateFirstTab();
-    } else if (!this.tabs.find(t => t === this.activeTab)) {
+    } else if (!this.tabs.find((t) => t === this.activeTab)) {
       // O'wise check if current active tab has been deleted.
       // If so, we must find the closest.
       // Use `setTimeout` as this causes a 'changed after checked' error o'wise.
@@ -120,11 +118,11 @@ export class SuiTabset implements AfterContentInit {
   }
 
   // Fires whenever a tab header's active state is externally changed.
-  private onHeaderActiveChanged(tab:Tab):void {
+  private onHeaderActiveChanged(tab: Tab): void {
     // If the tab has become activated, but was not previously the active tab:
     if (tab.isActive && this.activeTab !== tab) {
       // Deactivate all of the tabs.
-      this.tabs.filter(t => t !== tab).forEach(t => (t.isActive = false));
+      this.tabs.filter((t) => t !== tab).forEach((t) => (t.isActive = false));
 
       // Set the currently active tab to this one.
       this.activeTab = tab;
@@ -135,16 +133,18 @@ export class SuiTabset implements AfterContentInit {
       // Activate the closest tab to it.
       this.activateClosestTab(tab);
     }
+
+    this.changeDetector.markForCheck();
   }
 
   // Activate the first tab in the set.
-  public activateFirstTab():void {
+  public activateFirstTab(): void {
     this.activeTab = this.tabs[0];
   }
 
   // Activates the closest available tab to a given one.
-  public activateClosestTab(tab:Tab):void {
-    let nextAvailable:Tab | undefined;
+  public activateClosestTab(tab: Tab): void {
+    let nextAvailable: Tab | undefined;
 
     // When the exited tab's index is higher than all available tabs,
     if (tab.index >= this.tabs.length) {
@@ -154,7 +154,7 @@ export class SuiTabset implements AfterContentInit {
 
     // If that didn't work, try the following cases:
     if (!nextAvailable) {
-      if (!this.tabs.find(t => t === tab)) {
+      if (!this.tabs.find((t) => t === tab)) {
         // When the exited tab no longer exists,
         // Replace it with a tab at the same index.
         nextAvailable = this.tabs[tab.index];

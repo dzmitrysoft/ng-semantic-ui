@@ -27,7 +27,6 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint --fix --project .",
       "git add"
     ]
   },
@@ -47,16 +46,16 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "bowser": "^1.7.2",
+    "bowser": "^2.10.0",
     "date-fns": "2.14.0",
-    "element-closest": "^2.0.2",
-    "extend": "^3.0.1",
+    "element-closest": "^3.0.2",
+    "extend": "^3.0.2",
     "is-ua-webview": "^1.0.5",
-    "popper.js": "^1.14.0",
+    "popper.js": "^1.16.1",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "rxjs": "^6.5.0"
+    "rxjs": "^6.6.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1000.1",
@@ -73,7 +72,7 @@
     "@types/jasminewd2": "~2.0.3",
     "ci-info": "^2.0.0",
     "codelyzer": "^5.1.2",
-    "husky": "^4.2.3",
+    "husky": "4.2.5",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.0.0",
@@ -85,15 +84,15 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-remap-istanbul": "~0.4.0",
     "karma-mocha-reporter": "^2.2.5",
-    "lint-staged": "^10.0.7",
-    "ng-packagr": "^10.0.0",
-    "prettier": "^2.0.4",
+    "lint-staged": "8.1.7",
+    "ng-packagr": "^10.0.1",
+    "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
     "rxjs": "^6.5.4",
-    "tslint": "~6.1.0",
-    "ts-node": "~5.0.1",
+    "tslint": "~6.1.2",
+    "ts-node": "~8.10.2",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^4.1.1",
+    "tslint-eslint-rules": "^5.4.0",
     "tslint-plugin-prettier": "^2.3.0",
     "typescript": "~3.9.6",
     "web-animations-js": "^2.3.2",
@@ -105,10 +104,10 @@
     "@angular/forms": "^10.0.2",
     "@angular/language-service": "^10.0.2",
     "@angular/router": "^10.0.2",
-    "@types/extend": "^3.0.0",
-    "@types/node": "^12.11.1",
+    "@types/extend": "^3.0.1",
+    "@types/node": "^14.0.20",
     "@types/prismjs": "~1.4.18",
-    "core-js": "^2.5.4",
+    "core-js": "^3.6.5",
     "fs-extra": "^5.0.0"
   }
 }
