@@ -314,6 +314,31 @@ export abstract class SuiSelectBase<T, U> implements AfterContentInit, OnDestroy
     }
   }
 
+  private asyncEach(arr: any, func: any): void {
+    let lastInd = 0;
+    const getNextLimit = (n: number) => {
+      if (arr.length < lastInd) {
+        return;
+      }
+      const count = arr.length < lastInd + n ? arr.length - lastInd : n;
+      let t = 0;
+
+      setTimeout(() => {
+        for (let i = 0; i < count; i++) {
+          const el = arr[lastInd + i];
+          func(el, () => {
+            t++;
+            if (t === count) {
+              lastInd += n;
+              getNextLimit(20);
+            }
+          });
+        }
+      });
+    };
+    getNextLimit(20);
+  }
+
   protected onAvailableOptionsRendered(): void {
     // Unsubscribe from all previous subscriptions to avoid memory leaks on large selects.
     this._renderedSubscriptions.forEach((rs) => rs.unsubscribe());

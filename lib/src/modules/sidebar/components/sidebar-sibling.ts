@@ -1,27 +1,26 @@
-import { Component, Input, HostBinding, HostListener, ElementRef, Renderer2 } from "@angular/core";
+import { Component, Input, HostBinding, HostListener, ElementRef, Renderer2, OnDestroy } from "@angular/core";
 import { SidebarService, SidebarTransition } from "../services/sidebar.service";
 
 @Component({
   selector: "sui-sidebar-sibling",
-  template: `
-    <ng-content></ng-content>
-  `,
+  template: ` <ng-content></ng-content> `,
   styles: [
     `
       :host {
         display: block;
       }
-    `
-  ]
+    `,
+  ],
 })
-export class SuiSidebarSibling {
-  private _service:SidebarService;
+export class SuiSidebarSibling implements OnDestroy {
+  private _service: SidebarService;
+  private _documentClickListener: () => void;
 
-  public get service():SidebarService {
+  public get service(): SidebarService {
     return this._service;
   }
 
-  public set service(service:SidebarService) {
+  public set service(service: SidebarService) {
     this._service = service;
 
     setTimeout(() => this.updateTransform());
@@ -29,10 +28,10 @@ export class SuiSidebarSibling {
   }
 
   @Input()
-  public isDimmedWhenVisible:boolean;
+  public isDimmedWhenVisible: boolean;
 
   @HostBinding("class.visible")
-  public get isVisible():boolean {
+  public get isVisible(): boolean {
     if (!this.service) {
       return false;
     }
@@ -40,7 +39,7 @@ export class SuiSidebarSibling {
   }
 
   @HostBinding("class.dimmed")
-  public get isDimmed():boolean {
+  public get isDimmed(): boolean {
     if (!this.service) {
       return false;
     }
@@ -48,15 +47,15 @@ export class SuiSidebarSibling {
   }
 
   @HostBinding("class.pusher")
-  public readonly hasClasses:boolean;
+  public readonly hasClasses: boolean;
 
-  constructor(private _renderer:Renderer2, private _element:ElementRef) {
+  constructor(private _renderer: Renderer2, private _element: ElementRef) {
     this.isDimmedWhenVisible = false;
 
     this.hasClasses = true;
   }
 
-  private updateTransform():void {
+  private updateTransform(): void {
     this._renderer.removeStyle(this._element.nativeElement, "transform");
     this._renderer.removeStyle(this._element.nativeElement, "-webkit-transform");
 
@@ -69,12 +68,25 @@ export class SuiSidebarSibling {
       this._renderer.setStyle(this._element.nativeElement, "transform", translate);
       this._renderer.setStyle(this._element.nativeElement, "-webkit-transform", translate);
     }
+
+    if (this.service.isVisible) {
+      this._documentClickListener = this._renderer.listen("document", "click", (e: MouseEvent) => this.onClick(e));
+    } else {
+      if (this._documentClickListener) {
+        this._documentClickListener();
+      }
+    }
   }
 
-  @HostListener("click", ["$event"])
-  public onClick(_event:MouseEvent):void {
+  public onClick(_event: MouseEvent): void {
     if (this.service.isVisible && !this.service.wasJustOpened) {
       this.service.setVisibleState(false);
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (this._documentClickListener) {
+      this._documentClickListener();
     }
   }
 }
