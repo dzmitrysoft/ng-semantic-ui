@@ -1,26 +1,19 @@
 import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnInit,
-    Output,
-    Renderer2,
-    ViewChild,
-    ViewContainerRef
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+  Renderer2,
+  ViewChild,
+  ViewContainerRef,
 } from "@angular/core";
-import {
-    IDynamicClasses,
-    KeyCode,
-    Util
-} from "../../../misc/util/helpers/util";
+import { IDynamicClasses, KeyCode, Util } from "../../../misc/util/helpers/util";
 import { SuiComponentFactory } from "../../../misc/util/services/component-factory.service";
-import {
-    Transition,
-    TransitionDirection
-} from "../../transition/classes/transition";
+import { Transition, TransitionDirection } from "../../transition/classes/transition";
 import { TransitionController } from "../../transition/classes/transition-controller";
 import { ModalConfig, ModalSize } from "../classes/modal-config";
 import { ModalControls, ModalResult } from "../classes/modal-controls";
@@ -58,78 +51,78 @@ import { ModalControls, ModalResult } from "../classes/modal-controls";
       </div>
     </sui-modal-dimmer>
   `,
-  styles: [``]
+  styles: [``],
 })
 export class SuiModal<T, U> implements OnInit, AfterViewInit {
   @Input()
   // Determines whether the modal can be closed with a close button, clicking outside, or the escape key.
-  public isClosable:boolean;
+  public isClosable: boolean;
 
   @Input()
   // Value to deny with when closing via `isClosable`.
-  public closeResult:U;
+  public closeResult: U;
 
   // Separate class for the `approve` and `deny` methods to support passing into components.
-  public controls:ModalControls<T, U>;
+  public controls: ModalControls<T, U>;
 
-  public get approve():ModalResult<T> {
+  public get approve(): ModalResult<T> {
     return this.controls.approve;
   }
 
-  public get deny():ModalResult<U> {
+  public get deny(): ModalResult<U> {
     return this.controls.deny;
   }
 
   // Fires when the modal closes, after `approve` has been called.
   @Output("approved")
-  public onApprove:EventEmitter<T>;
+  public onApprove: EventEmitter<T>;
 
   // Fires when the modal closes, after `deny` has been called.
   @Output("denied")
-  public onDeny:EventEmitter<U>;
+  public onDeny: EventEmitter<U>;
 
   // Fires when the modal closes.
   @Output("dismissed")
-  public onDismiss:EventEmitter<void>;
+  public onDismiss: EventEmitter<void>;
 
   @ViewChild("modal", { static: true })
-  private _modalElement:ElementRef;
+  private _modalElement: ElementRef;
 
   // Size used to display the modal.
   @Input()
-  public size:ModalSize;
+  public size: ModalSize;
 
   @Input()
-  public isCentered:boolean;
+  public isCentered: boolean;
 
   // Whether the modal takes up the full width of the screen.
-  private _isFullScreen:boolean;
+  private _isFullScreen: boolean;
 
   // Value to deny with when closing via `isClosable`.
   @Input()
-  public get isFullScreen():boolean {
+  public get isFullScreen(): boolean {
     return this._isFullScreen;
   }
 
-  public set isFullScreen(fullScreen:boolean) {
+  public set isFullScreen(fullScreen: boolean) {
     this._isFullScreen = Util.DOM.parseBooleanAttribute(fullScreen);
   }
 
   // Whether or not the modal has basic styles applied.
   @Input()
-  public isBasic:boolean;
+  public isBasic: boolean;
 
   // Whether the modal currently is displaying a scrollbar.
-  private _mustScroll:boolean;
+  private _mustScroll: boolean;
   // Whether or not the modal should always display a scrollbar.
-  private _mustAlwaysScroll:boolean;
+  private _mustAlwaysScroll: boolean;
 
   @Input()
-  public get mustScroll():boolean {
+  public get mustScroll(): boolean {
     return this._mustScroll;
   }
 
-  public set mustScroll(mustScroll:boolean) {
+  public set mustScroll(mustScroll: boolean) {
     this._mustScroll = mustScroll;
     // 'Cache' value in _mustAlwaysScroll so that if `true`, _mustScroll isn't ever auto-updated.
     this._mustAlwaysScroll = mustScroll;
@@ -137,52 +130,48 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   }
 
   // Whether the modal shows against a light background.
-  private _isInverted:boolean;
+  private _isInverted: boolean;
 
   @Input()
-  public get isInverted():boolean {
+  public get isInverted(): boolean {
     return this._isInverted;
   }
 
-  public set isInverted(inverted:boolean) {
+  public set isInverted(inverted: boolean) {
     this._isInverted = Util.DOM.parseBooleanAttribute(inverted);
   }
 
-  public transitionController:TransitionController;
+  public transitionController: TransitionController;
 
   // Transition to display modal with.
   @Input()
-  public transition:string;
+  public transition: string;
 
   // Duration of the modal & dimmer transitions.
   @Input()
-  public transitionDuration:number;
+  public transitionDuration: number;
 
   // Whether or not the backround dimmer is active.
-  public dimBackground:boolean;
+  public dimBackground: boolean;
   // True after `approve` or `deny` has been called.
-  private _isClosing:boolean;
+  private _isClosing: boolean;
 
   // `ViewContainerRef` for the element the template gets injected as a sibling of.
   @ViewChild("templateSibling", { static: true, read: ViewContainerRef })
-  public templateSibling:ViewContainerRef;
+  public templateSibling: ViewContainerRef;
 
   // Parent element of modal before relocation to document body.
-  private _originalContainer?:Element;
+  private _originalContainer?: Element;
 
-  public get dynamicClasses():IDynamicClasses {
-    const classes:IDynamicClasses = {};
+  public get dynamicClasses(): IDynamicClasses {
+    const classes: IDynamicClasses = {};
     if (this.size) {
       classes[this.size] = true;
     }
     return classes;
   }
 
-  constructor(
-    private _renderer:Renderer2,
-    private _element:ElementRef,
-    private _componentFactory:SuiComponentFactory
-  ) {
+  constructor(private _renderer: Renderer2, private _element: ElementRef, private _componentFactory: SuiComponentFactory) {
     // Initialise with default configuration from `ModalConfig` (to avoid writing defaults twice).
     const config = new ModalConfig<undefined, T, U>();
     this.loadConfig(config);
@@ -194,8 +183,8 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
 
     // Initialise controls with actions for the `approve` and `deny` cases.
     this.controls = new ModalControls<T, U>(
-      res => this.dismiss(() => this.onApprove.emit(res)),
-      res => this.dismiss(() => this.onDeny.emit(res))
+      (res) => this.dismiss(() => this.onApprove.emit(res)),
+      (res) => this.dismiss(() => this.onDeny.emit(res)),
     );
 
     // Internal variable initialisation.
@@ -204,13 +193,13 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
     this.transitionController = new TransitionController(false);
   }
 
-  public ngOnInit():void {
+  public ngOnInit(): void {
     // Transition the modal to be visible.
     this.transitionController.animate(new Transition(this.transition, this.transitionDuration, TransitionDirection.In));
     setTimeout(() => (this.dimBackground = true));
   }
 
-  public ngAfterViewInit():void {
+  public ngAfterViewInit(): void {
     // Move the modal to the document body to ensure correct scrolling.
     this._originalContainer = this._element.nativeElement.parentNode;
     document.querySelector("body")!.appendChild(this._element.nativeElement);
@@ -221,7 +210,10 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
     }
 
     const element = this._modalElement.nativeElement as Element;
-    setTimeout(() => this.updateScroll());
+    setTimeout(() => {
+      this._renderer.setStyle(element, "margin-top", `-${element.clientHeight / 2}px`);
+      this.updateScroll();
+    });
 
     // Focus any element with [autofocus] attribute.
     const autoFocus = element.querySelector("[autofocus]") as HTMLElement | null;
@@ -234,7 +226,7 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   }
 
   // Updates the modal with the specified configuration.
-  public loadConfig<V>(config:ModalConfig<V, T, U>):void {
+  public loadConfig<V>(config: ModalConfig<V, T, U>): void {
     this.isClosable = config.isClosable;
     this.closeResult = config.closeResult;
 
@@ -251,7 +243,7 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   }
 
   // Dismisses the modal with a transition, firing the callback after the modal has finished transitioning.
-  private dismiss(callback:() => void = () => {}):void {
+  private dismiss(callback: () => void = () => {}): void {
     // If we aren't currently closing,
     if (!this._isClosing) {
       this._isClosing = true;
@@ -267,13 +259,13 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
           }
           this.onDismiss.emit();
           callback();
-        })
+        }),
       );
     }
   }
 
   // Closes the modal with a 'deny' outcome, using the specified default reason.
-  public close():void {
+  public close(): void {
     if (this.isClosable) {
       // If we are allowed to close, fire the deny result with the default value.
       this.deny(this.closeResult);
@@ -281,7 +273,7 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   }
 
   // Decides whether the modal needs to reposition to allow scrolling.
-  private updateScroll():void {
+  private updateScroll(): void {
     // _mustAlwaysScroll works by stopping _mustScroll from being automatically updated, so it stays `true`.
     if (!this._mustAlwaysScroll && this._modalElement) {
       // Semantic UI modal margin and dimmer padding are 1rem, which is relative to the global font size, so for compatibility:
@@ -294,14 +286,14 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
     }
   }
 
-  public onClick(e:MouseEvent):void {
+  public onClick(e: MouseEvent): void {
     // Makes sense here, as the modal shouldn't be attached to any DOM element.
     e.stopPropagation();
   }
 
   // Document listener is fine here because nobody will have enough modals open.
   @HostListener("document:keyup", ["$event"])
-  public onDocumentKeyUp(e:KeyboardEvent):void {
+  public onDocumentKeyUp(e: KeyboardEvent): void {
     if (e.keyCode === KeyCode.Escape) {
       // Close automatically covers case of `!isClosable`, so check not needed.
       this.close();
@@ -309,7 +301,7 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   }
 
   @HostListener("window:resize")
-  public onDocumentResize():void {
+  public onDocumentResize(): void {
     this.updateScroll();
   }
 }
