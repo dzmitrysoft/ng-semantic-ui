@@ -85,7 +85,7 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   @Output("dismissed")
   public onDismiss: EventEmitter<void>;
 
-  @ViewChild("modal", { static: true })
+  @ViewChild("modal", { static: false })
   private _modalElement: ElementRef;
 
   // Size used to display the modal.
