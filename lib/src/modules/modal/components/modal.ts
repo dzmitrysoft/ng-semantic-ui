@@ -85,7 +85,7 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
   @Output("dismissed")
   public onDismiss: EventEmitter<void>;
 
-  @ViewChild("modal", { static: false })
+  @ViewChild("modal", { static: true })
   private _modalElement: ElementRef;
 
   // Size used to display the modal.
@@ -211,8 +211,8 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
 
     const element = this._modalElement.nativeElement as Element;
 
-    setTimeout(() => this._renderer.setStyle(element, "margin-top", `-${element.clientHeight / 2}px`), 10);
-    setTimeout(() => this.updateScroll(), 10);
+    setTimeout(() => this._renderer.setStyle(element, "margin-top", `-${element.clientHeight / 2}px`), 200);
+    setTimeout(() => this.updateScroll(), 200);
 
     // Focus any element with [autofocus] attribute.
     const autoFocus = element.querySelector("[autofocus]") as HTMLElement | null;
