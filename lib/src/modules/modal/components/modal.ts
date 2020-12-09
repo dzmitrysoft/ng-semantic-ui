@@ -211,10 +211,10 @@ export class SuiModal<T, U> implements OnInit, AfterViewInit {
 
     const element = this._modalElement.nativeElement as Element;
 
-    setTimeout(() => {
-      this._renderer.setStyle(element, "margin-top", `-${element.clientHeight / 2}px`);
-      this.updateScroll();
-    });
+    // setTimeout(() => {
+    //   this._renderer.setStyle(element, "margin-top", `-${element.clientHeight / 2}px`);
+    this.updateScroll();
+    // });
 
     // Focus any element with [autofocus] attribute.
     const autoFocus = element.querySelector("[autofocus]") as HTMLElement | null;
